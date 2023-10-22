@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -7,16 +7,12 @@ import {
   Text,
   View,
 } from 'react-native';
-import { fetchRepository, fetchStargazers } from '../../api';
-import { ListProps, Repository, Stargazer } from './types';
-
-const PER_PAGE = 30;
+import { Card } from '../../components/Card';
+import { COLORS } from '../../values/colors';
+import { useStargazerList } from './hooks';
+import { ListProps, Stargazer } from './types';
 
 export const List: React.FC<ListProps> = ({ route, navigation }) => {
-  const [isLoadingRepo, setIsLoadingRepo] = useState(true);
-  const [isLoadingList, setIsLoadingList] = useState(true);
-  const [repo, setRepo] = useState<Repository>();
-  const [data, setData] = useState<Stargazer[]>([]);
   const [page, setPage] = useState<number>(1);
   const { owner, repository } = route.params;
 
@@ -26,59 +22,19 @@ export const List: React.FC<ListProps> = ({ route, navigation }) => {
     });
   }, [navigation, owner, repository]);
 
-  const getStargazers = useCallback(async () => {
-    if (!repo || repo.stargazers_count > page * PER_PAGE) {
-      try {
-        const response = await fetchStargazers(owner, repository, page);
-        console.log('[debug] response:', response);
-        if (Array.isArray(response)) {
-          setData([...data, ...response]);
-        }
-      } catch (error) {
-        // TOOD: show error
-        console.error(error);
-      } finally {
-        setIsLoadingList(false);
-      }
-    }
-  }, [owner, repository, page]);
-
-  const getRepo = async () => {
-    try {
-      const response = await fetchRepository(owner, repository);
-      console.log('[debug] repo:', response);
-      if (response?.id) {
-        setRepo(response);
-      }
-    } catch (error) {
-      // TOOD: show error
-      console.error(error);
-    } finally {
-      setIsLoadingRepo(false);
-    }
-  };
-
-  useEffect(() => {
-    getRepo();
-  }, []);
-
-  useEffect(() => {
-    getStargazers();
-  }, [page]);
+  const { data, isLoadingRepo, isLoadingList, repo, repoError, listError } =
+    useStargazerList({
+      owner,
+      repository,
+      page,
+    });
 
   const renderItem = ({ item }: { item: Stargazer }) => {
     return (
-      <View
-        style={{
-          padding: 16,
-          width: '100%',
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 16,
-        }}>
+      <View style={styles.itemContainer}>
         <Image
           source={{ uri: item.avatar_url }}
-          style={{ width: 40, height: 40, borderRadius: 20 }}
+          style={styles.itemImage}
           loadingIndicatorSource={require('../../../assets/gh_logo.png')}
         />
         <Text>{item.login}</Text>
@@ -86,60 +42,58 @@ export const List: React.FC<ListProps> = ({ route, navigation }) => {
     );
   };
 
-  console.log('[debug] data:', data);
+  const ListEmptyComponent = () => (
+    <Text style={{ width: '100%', textAlign: 'center' }}>
+      {repo && !repo?.stargazers_count
+        ? 'No stargazers for the current repo'
+        : listError || 'Repository not found'}
+    </Text>
+  );
+
+  const keyExtractor = (item: Stargazer) => item.id.toString();
+
+  const getItemLayout = (
+    _data: ArrayLike<Stargazer> | null | undefined,
+    index: number,
+  ) => ({ length: 60, offset: 60 * index, index });
 
   return (
     <View style={styles.container}>
-      {isLoadingList || isLoadingRepo ? (
+      {isLoadingRepo || (isLoadingList && page === 1) ? (
         <ActivityIndicator size="large" />
       ) : (
-        <>
-          {(repo?.stargazers_count || repo?.description) && (
-            <View
-              style={{
-                margin: 16,
-                borderRadius: 10,
-                padding: 16,
-                alignContent: 'center',
-                backgroundColor: '#00A1B0',
-              }}>
-              {repo?.stargazers_count && (
-                <Text
-                  style={{
-                    width: '100%',
-                    alignSelf: 'center',
-                    color: 'white',
-                  }}>
-                  {repo?.stargazers_count} stargazers
+        <View style={styles.content}>
+          {(repo?.stargazers_count || repo?.description || !!repoError) && (
+            <Card>
+              {!!repo?.stargazers_count && (
+                <Text style={styles.cardText}>
+                  {repo?.stargazers_count?.toLocaleString()} stargazers
                 </Text>
               )}
-              {repo?.description && (
-                <Text
-                  style={{
-                    width: '100%',
-                    alignSelf: 'center',
-                    color: 'white',
-                  }}>
-                  {repo.description}
+              {!!repo?.description && (
+                <Text style={styles.cardText}>{repo.description}</Text>
+              )}
+              {!!repoError && (
+                <Text style={[styles.cardText, { color: COLORS.RED }]}>
+                  {repoError}
                 </Text>
               )}
-            </View>
+            </Card>
           )}
           <FlatList
-            style={{ width: '100%' }}
+            keyExtractor={keyExtractor}
             data={data}
             renderItem={renderItem}
-            ListEmptyComponent={
-              <Text style={{ width: '100%', textAlign: 'center' }}>
-                {repo && !repo?.stargazers_count
-                  ? 'No stargazers for the current repo'
-                  : 'Repository not found'}
-              </Text>
-            }
+            ListEmptyComponent={<ListEmptyComponent />}
             onEndReached={() => setPage(page + 1)}
             onEndReachedThreshold={0.5}
+            showsVerticalScrollIndicator={false}
+            getItemLayout={getItemLayout}
           />
-        </>
+          <View style={styles.loadMore}>
+            {isLoadingList && <ActivityIndicator size="small" />}
+          </View>
+        </View>
       )}
     </View>
   );
@@ -151,6 +105,35 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#CCECEF',
+    backgroundColor: COLORS.WHITE,
+  },
+  content: {
+    width: '100%',
+    flex: 1,
+    padding: 16,
+    gap: 16,
+  },
+  cardText: {
+    width: '100%',
+    alignSelf: 'center',
+  },
+  itemContainer: {
+    height: 60,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  itemImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  loadMore: {
+    position: 'absolute',
+    bottom: 32,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
