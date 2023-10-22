@@ -94,7 +94,7 @@ export const List: React.FC<ListProps> = ({ route, navigation }) => {
                   </Text>
                 )}
                 {!!repo?.description && (
-                  <Text style={styles.cardText}>{repo.description}</Text>
+                  <Text numberOfLines={5} ellipsizeMode='tail' style={styles.cardText}>{repo.description}</Text>
                 )}
                 {!!repoError && (
                   <Text style={[styles.cardText, { color: COLORS.RED }]}>
