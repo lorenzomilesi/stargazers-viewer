@@ -14,15 +14,11 @@ This is an Expo test app.
 
 ## 🚧 Installation
 
-To install the app, follow these steps:
-
 1. Clone the repository: `git clone https://github.com/lorenzomilesi/stargazers-viewer.git`
 2. Install dependencies: `yarn`
 3. Start the app on iOS (android): `yarn ios` (`yarn android`)
 
 ## 🕹️ Usage
-
-To use the app, follow these steps:
 
 1. Enter the owner and repository name in the input fields
 2. Press the "Search" button
