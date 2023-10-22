@@ -64,14 +64,20 @@ export const List: React.FC<ListProps> = ({ route, navigation }) => {
     </View>
   );
 
+  // Component to be rendered between each item of the list
+  const ItemSeparatorComponent = () => (
+    <View style={styles.separator} />
+  );
+
   // Function to extract the key from the item
   const keyExtractor = (item: Stargazer) => item.id.toString();
 
-  // In order to optimize the performance of the FlatList, we need to provide the height of the items
+  // In order to optimize the performance of the FlatList
+  // item height + separator height = 61
   const getItemLayout = (
     _data: ArrayLike<Stargazer> | null | undefined,
     index: number,
-  ) => ({ length: 60, offset: 60 * index, index });
+  ) => ({ length: 61, offset: 61 * index, index });
 
   return (
     <View style={styles.container}>
@@ -80,21 +86,24 @@ export const List: React.FC<ListProps> = ({ route, navigation }) => {
       ) : (
         <View style={styles.content}>
           {(repo?.stargazers_count || repo?.description || !!repoError) && (
-            <Card>
-              {!!repo?.stargazers_count && (
-                <Text style={styles.cardText}>
-                  {repo?.stargazers_count?.toLocaleString()} stargazers
-                </Text>
-              )}
-              {!!repo?.description && (
-                <Text style={styles.cardText}>{repo.description}</Text>
-              )}
-              {!!repoError && (
-                <Text style={[styles.cardText, { color: COLORS.RED }]}>
-                  {repoError}
-                </Text>
-              )}
-            </Card>
+            <>
+              <Card>
+                {!!repo?.stargazers_count && (
+                  <Text style={styles.cardText}>
+                    {repo?.stargazers_count?.toLocaleString()} stargazers
+                  </Text>
+                )}
+                {!!repo?.description && (
+                  <Text style={styles.cardText}>{repo.description}</Text>
+                )}
+                {!!repoError && (
+                  <Text style={[styles.cardText, { color: COLORS.RED }]}>
+                    {repoError}
+                  </Text>
+                )}
+              </Card>
+              <View style={[styles.separator, styles.divider]} />
+            </>
           )}
           <FlatList
             keyExtractor={keyExtractor}
@@ -106,6 +115,7 @@ export const List: React.FC<ListProps> = ({ route, navigation }) => {
             onEndReachedThreshold={0.5}
             showsVerticalScrollIndicator={false}
             getItemLayout={getItemLayout}
+            ItemSeparatorComponent={ItemSeparatorComponent}
           />
           <View style={styles.loadMore}>
             {isLoadingList && <ActivityIndicator size="small" />}
@@ -128,7 +138,6 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
     padding: 16,
-    gap: 16,
   },
   cardText: {
     width: '100%',
@@ -158,4 +167,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  divider: {
+    marginTop: 16,
+    marginBottom: 0,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: COLORS.LIGHT_GRAY,
+  }
 });

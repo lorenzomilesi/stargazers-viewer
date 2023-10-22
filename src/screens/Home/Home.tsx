@@ -43,13 +43,7 @@ export const Home: React.FC<HomeProps> = ({ navigation }) => {
         testID="search-button"
         disabled={disabled}
         onPress={onSearchPress}
-        style={{
-          marginTop: 20,
-          borderRadius: 10,
-          backgroundColor: disabled ? COLORS.GRAY : COLORS.BRAND,
-          paddingHorizontal: 32,
-          paddingVertical: 12,
-        }}>
+        style={[styles.pressable, !disabled ? styles.pressableEnabled : {}]}>
         <Text style={{ color: COLORS.WHITE }}>SEARCH</Text>
       </Pressable>
     </View>
@@ -64,5 +58,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: COLORS.WHITE,
+  },
+  pressable: {
+    marginTop: 20,
+    borderRadius: 10,
+    backgroundColor: COLORS.GRAY,
+    paddingHorizontal: 32,
+    paddingVertical: 12,
+  },
+  pressableEnabled: {
+    shadowOpacity: 0.5,
+    shadowRadius: 2.62,
+    shadowColor: COLORS.DARK_GRAY,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    elevation: 4,
+    backgroundColor: COLORS.BRAND,
   },
 });
