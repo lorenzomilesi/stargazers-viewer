@@ -1,3 +1,4 @@
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -43,11 +44,14 @@ export const List: React.FC<ListProps> = ({ route, navigation }) => {
   };
 
   const ListEmptyComponent = () => (
-    <Text style={{ width: '100%', textAlign: 'center' }}>
-      {repo && !repo?.stargazers_count
-        ? 'No stargazers for the current repo'
-        : listError || 'Repository not found'}
-    </Text>
+    <View style={styles.listEmptyComponentContainer}>
+      <FontAwesome name="inbox" size={64} color={COLORS.DARK_GRAY} />
+      <Text>
+        {repo && !repo?.stargazers_count
+          ? 'No stargazers for the current repo'
+          : listError || 'Repository not found'}
+      </Text>
+    </View>
   );
 
   const keyExtractor = (item: Stargazer) => item.id.toString();
@@ -84,6 +88,7 @@ export const List: React.FC<ListProps> = ({ route, navigation }) => {
             keyExtractor={keyExtractor}
             data={data}
             renderItem={renderItem}
+            contentContainerStyle={{ flexGrow: 1 }}
             ListEmptyComponent={<ListEmptyComponent />}
             onEndReached={() => setPage(page + 1)}
             onEndReachedThreshold={0.5}
@@ -135,5 +140,10 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  listEmptyComponentContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
