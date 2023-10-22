@@ -1,4 +1,7 @@
-import { StackNavigationOptions, createStackNavigator } from '@react-navigation/stack';
+import {
+  StackNavigationOptions,
+  createStackNavigator,
+} from '@react-navigation/stack';
 import React from 'react';
 
 import { Home } from '../screens/Home';
@@ -22,6 +25,11 @@ const listOptions: StackNavigationOptions = {
   headerTintColor: COLORS.BRAND,
   headerShadowVisible: false,
 };
+
+/**
+ * Renders the main navigation stack for the app.
+ * @returns The navigation stack component.
+ */
 
 export const AppNavigator = () => {
   return (

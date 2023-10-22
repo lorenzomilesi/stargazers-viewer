@@ -5,6 +5,13 @@ import { Routes } from '../../navigation/types';
 import { COLORS } from '../../values/colors';
 import { HomeProps } from './types';
 
+/**
+ * Renders the home screen of the app.
+ * It containes a form to search for a GitHub repository.
+ * @param navigation - The navigation prop used to navigate between screens.
+ * @returns The home screen component.
+ */
+
 export const Home: React.FC<HomeProps> = ({ navigation }) => {
   const [owner, setOwner] = React.useState<string>('');
   const [repository, setRepository] = React.useState<string>('');

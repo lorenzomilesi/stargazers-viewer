@@ -1,8 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
 import { fetchRepository, fetchStargazers } from '../../api';
+import { PER_PAGE } from '../../values/constants';
 import { Repository, Stargazer } from './types';
 
-const PER_PAGE = 30;
+/**
+ * Custom hook to fetch stargazers from the GitHub API.
+ *
+ * @param owner | owner of the repository.
+ * @param repository | repository name.
+ * @param page | optional page number.
+ * @returns An object containing the stargazers, the repository details and the fetch loading state.
+ */
 
 export const useStargazerList = ({
   owner,

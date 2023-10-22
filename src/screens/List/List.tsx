@@ -13,6 +13,14 @@ import { COLORS } from '../../values/colors';
 import { useStargazerList } from './hooks';
 import { ListProps, Stargazer } from './types';
 
+/**
+ * Renders the list screen of the app.
+ * It contains a list of stargazers for a GitHub repository.
+ * @param route - The route prop used to get the owner and repository params.
+ * @param navigation - The navigation prop used to navigate between screens.
+ * @returns The list screen component.
+ */
+
 export const List: React.FC<ListProps> = ({ route, navigation }) => {
   const [page, setPage] = useState<number>(1);
   const { owner, repository } = route.params;
@@ -30,6 +38,7 @@ export const List: React.FC<ListProps> = ({ route, navigation }) => {
       page,
     });
 
+  // Component to render each item of the list
   const renderItem = ({ item }: { item: Stargazer }) => {
     return (
       <View style={styles.itemContainer}>
@@ -43,6 +52,7 @@ export const List: React.FC<ListProps> = ({ route, navigation }) => {
     );
   };
 
+  // Component to be rendered when the list is empty
   const ListEmptyComponent = () => (
     <View style={styles.listEmptyComponentContainer}>
       <FontAwesome name="inbox" size={64} color={COLORS.DARK_GRAY} />
@@ -54,8 +64,10 @@ export const List: React.FC<ListProps> = ({ route, navigation }) => {
     </View>
   );
 
+  // Function to extract the key from the item
   const keyExtractor = (item: Stargazer) => item.id.toString();
 
+  // In order to optimize the performance of the FlatList, we need to provide the height of the items
   const getItemLayout = (
     _data: ArrayLike<Stargazer> | null | undefined,
     index: number,
@@ -64,7 +76,7 @@ export const List: React.FC<ListProps> = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       {isLoadingRepo || (isLoadingList && page === 1) ? (
-        <ActivityIndicator size="large" testID='loading-indicator'  />
+        <ActivityIndicator size="large" testID="loading-indicator" />
       ) : (
         <View style={styles.content}>
           {(repo?.stargazers_count || repo?.description || !!repoError) && (
