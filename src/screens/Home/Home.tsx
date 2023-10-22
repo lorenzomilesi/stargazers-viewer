@@ -1,8 +1,9 @@
 import React, { useCallback } from 'react';
-import { Image, Pressable, StyleSheet, View, Text } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { TextInput } from '../../components/TextInput';
-import { HomeProps } from './types';
 import { Routes } from '../../navigation/types';
+import { COLORS } from '../../values/colors';
+import { HomeProps } from './types';
 
 export const Home: React.FC<HomeProps> = ({ navigation }) => {
   const [owner, setOwner] = React.useState<string>('');
@@ -38,11 +39,11 @@ export const Home: React.FC<HomeProps> = ({ navigation }) => {
         style={{
           marginTop: 20,
           borderRadius: 10,
-          backgroundColor: disabled ? 'grey' : '#00A1B0',
+          backgroundColor: disabled ? COLORS.GRAY : COLORS.BRAND,
           paddingHorizontal: 32,
           paddingVertical: 12,
         }}>
-        <Text style={{ color: 'white' }}>SEARCH</Text>
+        <Text style={{ color: COLORS.WHITE }}>SEARCH</Text>
       </Pressable>
     </View>
   );
@@ -55,6 +56,6 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#CCECEF',
+    backgroundColor: COLORS.WHITE,
   },
 });

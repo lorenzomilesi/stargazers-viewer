@@ -1,9 +1,9 @@
-import 'react-native-gesture-handler';
-import * as React from 'react';
 import { StackNavigationOptions, createStackNavigator } from '@react-navigation/stack';
+import React from 'react';
 
 import { Home } from '../screens/Home';
 import { List } from '../screens/List';
+import { COLORS } from '../values/colors';
 import { Routes, StackParamList } from './types';
 
 const { Screen, Navigator } = createStackNavigator<StackParamList>();
@@ -15,11 +15,11 @@ const homeOptions = {
 const listOptions: StackNavigationOptions = {
   title: 'Stargazers',
   headerStyle: {
-    backgroundColor: '#CCECEF',
+    backgroundColor: COLORS.WHITE,
     borderWidth: 0,
   },
   headerBackTitleVisible: false,
-  headerTintColor: '#00A1B0',
+  headerTintColor: COLORS.BRAND,
   headerShadowVisible: false,
 };
 

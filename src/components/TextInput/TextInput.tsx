@@ -1,5 +1,6 @@
 import React from 'react';
 import { TextInput as RNTextInput, StyleSheet } from 'react-native';
+import { COLORS } from '../../values/colors';
 import { TextInputProps } from './types';
 
 export const TextInput: React.FC<TextInputProps> = ({ ...props }) => {
@@ -13,6 +14,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     marginBottom: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    backgroundColor: COLORS.LIGHT_GRAY,
   },
 });
