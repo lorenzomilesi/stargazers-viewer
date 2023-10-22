@@ -60,7 +60,7 @@ export const List: React.FC<ListProps> = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       {isLoadingRepo || (isLoadingList && page === 1) ? (
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size="large" testID='loading-indicator'  />
       ) : (
         <View style={styles.content}>
           {(repo?.stargazers_count || repo?.description || !!repoError) && (
