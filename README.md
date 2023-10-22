@@ -16,7 +16,8 @@ This is an Expo test app.
 
 1. Clone the repository: `git clone https://github.com/lorenzomilesi/stargazers-viewer.git`
 2. Install dependencies: `yarn`
-3. Start the app on iOS (android): `yarn ios` (`yarn android`)
+3. Start the app: `yarn start`
+4. Follow the preferred solution presented by the terminal
 
 ## 🕹️ Usage
 
